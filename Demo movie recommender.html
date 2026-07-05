@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo — Hybrid Movie Recommender | Hanshika Awasthi</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#FAFBFE; --surface:#FFFFFF; --surface-2:#F3F5FA; --line:#E4E8F1;
+    --text:#12151F; --muted:#5C6478; --signal:#0E9C94; --regime:#7C3AED;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{ background:var(--ink); color:var(--text); font-family:'IBM Plex Sans',sans-serif; }
+  a{ color:var(--signal); text-decoration:none; }
+  .topbar{
+    background:var(--surface); border-bottom:1px solid var(--line); padding:16px 24px;
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;
+  }
+  .topbar .back{ font-family:'IBM Plex Mono',monospace; font-size:13px; }
+  .badge{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--signal);
+    background:rgba(14,156,148,0.08); border:1px solid var(--signal); padding:4px 10px; border-radius:20px;
+  }
+  .wrap{ max-width:900px; margin:0 auto; padding:50px 24px 90px; }
+  h1{ font-family:'Fraunces',serif; font-weight:600; font-size:32px; margin-bottom:8px; }
+  p.sub{ color:var(--muted); max-width:65ch; margin-bottom:32px; font-size:15px; }
+  select{
+    font-family:'IBM Plex Sans',sans-serif; font-size:15px; padding:12px 14px; border-radius:8px;
+    border:1px solid var(--line); background:var(--surface); color:var(--text); width:100%; max-width:420px;
+  }
+  .weights{ display:flex; gap:24px; margin:22px 0 32px; flex-wrap:wrap; align-items:center; }
+  .weight-item{ display:flex; flex-direction:column; gap:6px; font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--muted); }
+  .weight-item input{ width:160px; }
+  .results{ display:grid; gap:12px; }
+  .rcard{
+    background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:16px 18px;
+    display:flex; justify-content:space-between; align-items:center; gap:16px;
+  }
+  .rcard .title{ font-weight:600; font-size:15px; margin-bottom:4px; }
+  .rcard .genres{ font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--muted); }
+  .score-bar{ width:120px; flex-shrink:0; }
+  .score-track{ height:6px; border-radius:3px; background:var(--surface-2); overflow:hidden; margin-bottom:4px; }
+  .score-fill{ height:100%; background:linear-gradient(90deg, var(--signal), var(--regime)); }
+  .score-num{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted); text-align:right; }
+  .footnote{ margin-top:40px; font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--muted); line-height:1.6; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="back" href="index.html">← Back to portfolio</a>
+  <span class="badge">Live in-browser demo</span>
+</div>
+
+<div class="wrap">
+  <h1>Hybrid movie recommender</h1>
+  <p class="sub">
+    Pick a movie you like — the engine blends content similarity (genre/keyword overlap, a stand-in for TF-IDF)
+    with a simulated collaborative-filtering signal (a stand-in for the SVD component) to rank the rest of the catalog.
+  </p>
+
+  <select id="movieSelect"></select>
+
+  <div class="weights">
+    <div class="weight-item">Content weight (TF-IDF)
+      <input type="range" id="wContent" min="0" max="100" value="60">
+    </div>
+    <div class="weight-item">Collaborative weight (SVD)
+      <input type="range" id="wCollab" min="0" max="100" value="40">
+    </div>
+  </div>
+
+  <div class="results" id="results"></div>
+
+  <div class="footnote">
+    Simplified for the browser: genre/keyword Jaccard similarity approximates TF-IDF content scoring, and a fixed
+    per-movie popularity vector approximates the SVD collaborative signal. The full research version (see Research
+    section) trains proper TF-IDF vectors and an SVD matrix factorization on the MovieLens dataset, evaluated with
+    Precision@K and RMSE.
+  </div>
+</div>
+
+<script>
+  const movies = [
+    {t:"Nocturne Drive", g:["thriller","crime"], k:["heist","night","betrayal"], pop:0.8},
+    {t:"Paper Constellations", g:["drama","romance"], k:["memory","letters","reunion"], pop:0.6},
+    {t:"The Long Static", g:["scifi","drama"], k:["ai","isolation","space"], pop:0.7},
+    {t:"Salt & Marrow", g:["drama"], k:["family","inheritance","coast"], pop:0.4},
+    {t:"Ferrous", g:["action","scifi"], k:["robots","war","rebellion"], pop:0.9},
+    {t:"Half-Light Kingdom", g:["fantasy","adventure"], k:["magic","quest","siblings"], pop:0.75},
+    {t:"Quiet Static", g:["drama","thriller"], k:["secrets","small-town","detective"], pop:0.55},
+    {t:"Marigold Season", g:["romance","comedy"], k:["wedding","family","festival"], pop:0.65},
+    {t:"The Cartographer's Debt", g:["adventure","drama"], k:["maps","journey","betrayal"], pop:0.5},
+    {t:"Signal Loss", g:["scifi","thriller"], k:["ai","conspiracy","isolation"], pop:0.85},
+    {t:"Ashvale", g:["horror","thriller"], k:["small-town","secrets","cult"], pop:0.6},
+    {t:"Bright Static Noise", g:["comedy","drama"], k:["family","reunion","road-trip"], pop:0.45},
+    {t:"Rin & Halo", g:["fantasy","action"], k:["magic","siblings","war"], pop:0.7},
+    {t:"The Slow Harvest", g:["drama"], k:["coast","inheritance","memory"], pop:0.35},
+    {t:"Copper Wire Sky", g:["scifi","romance"], k:["ai","memory","space"], pop:0.65},
+    {t:"Undertow", g:["thriller","crime"], k:["heist","betrayal","coast"], pop:0.72},
+  ];
+
+  const select = document.getElementById('movieSelect');
+  movies.forEach((m,i) => {
+    const opt = document.createElement('option');
+    opt.value = i; opt.textContent = m.t + "  ·  " + m.g.join(', ');
+    select.appendChild(opt);
+  });
+
+  function jaccard(a, b){
+    const setA = new Set(a), setB = new Set(b);
+    const inter = [...setA].filter(x => setB.has(x)).length;
+    const union = new Set([...setA, ...setB]).size;
+    return union === 0 ? 0 : inter/union;
+  }
+
+  function render(){
+    const idx = parseInt(select.value);
+    const base = movies[idx];
+    const wC = parseInt(document.getElementById('wContent').value)/100;
+    const wS = parseInt(document.getElementById('wCollab').value)/100;
+
+    const scored = movies.map((m,i) => {
+      if(i === idx) return null;
+      const genreSim = jaccard(base.g, m.g);
+      const keySim = jaccard(base.k, m.k);
+      const contentScore = (genreSim*0.6 + keySim*0.4);
+      const collabScore = 1 - Math.abs(base.pop - m.pop);
+      const finalScore = (contentScore*wC + collabScore*wS) / Math.max(0.01, (wC+wS));
+      return {m, score: finalScore};
+    }).filter(Boolean).sort((a,b) => b.score - a.score).slice(0,5);
+
+    const results = document.getElementById('results');
+    results.innerHTML = scored.map(s => `
+      <div class="rcard">
+        <div>
+          <div class="title">${s.m.t}</div>
+          <div class="genres">${s.m.g.join(' · ')}</div>
+        </div>
+        <div class="score-bar">
+          <div class="score-track"><div class="score-fill" style="width:${Math.round(s.score*100)}%"></div></div>
+          <div class="score-num">match ${Math.round(s.score*100)}%</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  select.addEventListener('change', render);
+  document.getElementById('wContent').addEventListener('input', render);
+  document.getElementById('wCollab').addEventListener('input', render);
+  render();
+</script>
+
+</body>
+</html>
