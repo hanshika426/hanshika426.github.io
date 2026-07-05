@@ -8,15 +8,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#0B0F14;
-    --surface:#121820;
-    --surface-2:#161e28;
-    --line:#232d38;
-    --text:#E8EDF2;
-    --muted:#8493A3;
-    --signal:#5FE1B3;   /* detection line */
-    --regime:#F2A65A;   /* regime-shift marker */
-    --regime-dim: rgba(242,166,90,0.15);
+    --ink:#080B18;
+    --surface:#10142A;
+    --surface-2:#141A36;
+    --line:#232A50;
+    --text:#EEF0FB;
+    --muted:#8B93C4;
+    --signal:#4FE0D8;   /* aurora cyan — detection line */
+    --regime:#C77DFF;   /* aurora violet — regime-shift marker */
+    --regime-dim: rgba(199,125,255,0.15);
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   html{scroll-behavior:smooth;}
@@ -64,6 +64,21 @@
     border-bottom:1px solid var(--line);
     position:relative;
     overflow:hidden;
+  }
+  #starfield{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    z-index:0;
+    opacity:0.7;
+  }
+  header.hero .wrap{ position:relative; z-index:1; }
+  h1.name .gradient{
+    background:linear-gradient(100deg, var(--signal), var(--regime) 65%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
   }
   .eyebrow{
     font-family:'IBM Plex Mono', monospace;
@@ -114,16 +129,25 @@
     border:1px solid var(--line);
     text-decoration:none;
     color:var(--text);
-    transition:border-color .2s, color .2s;
+    transition:border-color .2s, color .2s, box-shadow .2s, transform .2s;
   }
-  .btn:hover{ border-color:var(--signal); color:var(--signal); }
-  .btn.primary{
-    background:var(--signal);
-    color:var(--ink);
+  .btn:hover{
     border-color:var(--signal);
-    font-weight:500;
+    color:var(--signal);
+    box-shadow:0 0 0 1px rgba(79,224,216,0.15), 0 6px 18px rgba(79,224,216,0.12);
+    transform:translateY(-1px);
   }
-  .btn.primary:hover{ opacity:0.88; color:var(--ink); }
+  .btn.primary{
+    background:linear-gradient(100deg, var(--signal), var(--regime) 130%);
+    color:var(--ink);
+    border-color:transparent;
+    font-weight:600;
+  }
+  .btn.primary:hover{
+    opacity:0.92;
+    color:var(--ink);
+    box-shadow:0 6px 24px rgba(199,125,255,0.25);
+  }
 
   /* ---------- CHART SIGNATURE ---------- */
   .chart-panel{
@@ -252,8 +276,15 @@
     display:grid;
     grid-template-columns:140px 1fr;
     gap:24px;
-    padding:26px 0;
+    padding:26px 20px;
+    margin:0 -20px;
     border-top:1px solid var(--line);
+    border-radius:8px;
+    transition:background .25s ease, transform .25s ease;
+  }
+  .project:hover{
+    background:linear-gradient(90deg, rgba(79,224,216,0.05), rgba(199,125,255,0.05));
+    transform:translateX(4px);
   }
   .project:first-of-type{ border-top:none; }
   .p-tag{
@@ -296,6 +327,12 @@
     border-left:2px solid var(--regime);
     padding:20px 22px;
     border-radius:0 4px 4px 0;
+    transition:box-shadow .25s ease, border-color .25s ease, transform .25s ease;
+  }
+  .rcard:hover{
+    border-color:var(--regime);
+    box-shadow:0 8px 28px rgba(199,125,255,0.12);
+    transform:translateY(-2px);
   }
   .rcard .p-title{ font-size:17px; margin-bottom:6px; }
   .rcard .meta{
@@ -367,14 +404,16 @@
       <a href="#research">Research</a>
       <a href="#skills">Skills</a>
       <a href="#contact">Contact</a>
+      <a href="https://github.com/hanshika426" target="_blank" rel="noopener">GitHub ↗</a>
     </div>
   </div>
 </nav>
 
 <header class="hero">
+  <canvas id="starfield"></canvas>
   <div class="wrap">
     <div class="eyebrow">Available for freelance &amp; internship work</div>
-    <h1 class="name">Hanshika Awasthi<br><em>builds systems that catch what others miss.</em></h1>
+    <h1 class="name"><span class="gradient">Hanshika Awasthi</span><br><em>builds systems that catch what others miss.</em></h1>
     <p class="hero-sub">
       Third-year B.Tech CS student working across applied AI, full-stack development, and quantitative modeling —
       from production chatbots for e-commerce brands to regime-switching models for fraud detection research.
@@ -542,9 +581,9 @@
       to dashboards to research-driven modeling work.
     </p>
     <div class="contact-row">
-      <a class="btn primary" href="mailto:your-email@example.com">Email me</a>
-      <a class="btn" href="#">LinkedIn</a>
-      <a class="btn" href="#">GitHub</a>
+      <a class="btn primary" href="mailto:hanshika426@gmail.com">Email me</a>
+      <a class="btn" href="https://www.linkedin.com/in/hanshika-awasthi-32129b336" target="_blank" rel="noopener">LinkedIn</a>
+      <a class="btn" href="https://github.com/hanshika426" target="_blank" rel="noopener">GitHub</a>
     </div>
 
     <div class="foot-meta">
@@ -728,17 +767,67 @@
     });
   })();
 
+  // Ambient starfield in hero background
+  (function(){
+    const canvas = document.getElementById('starfield');
+    if(!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function resize(){
+      const rect = canvas.parentElement.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const stars = [];
+    const count = Math.floor((canvas.width * canvas.height) / 9000);
+    for(let i=0;i<count;i++){
+      stars.push({
+        x: Math.random()*canvas.width,
+        y: Math.random()*canvas.height,
+        r: Math.random()*1.2 + 0.3,
+        baseAlpha: Math.random()*0.5 + 0.15,
+        phase: Math.random()*Math.PI*2,
+        speed: Math.random()*0.015 + 0.005,
+        hue: Math.random() > 0.5 ? '79,224,216' : '199,125,255'
+      });
+    }
+
+    let t = 0;
+    function draw(){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      stars.forEach(s=>{
+        const twinkle = reduceMotion ? s.baseAlpha : s.baseAlpha + Math.sin(t*s.speed*10 + s.phase)*0.2;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(${s.hue},${Math.max(0,twinkle)})`;
+        ctx.fill();
+      });
+      t += 1;
+      if(!reduceMotion) requestAnimationFrame(draw);
+    }
+    draw();
+  })();
+
   // Active nav link highlight on scroll
   (function(){
     const navLinks = document.querySelectorAll('.navlinks a');
-    const targets = Array.from(navLinks).map(a => document.querySelector(a.getAttribute('href')));
+    const targets = Array.from(navLinks).map(a => {
+      const href = a.getAttribute('href');
+      return href && href.startsWith('#') ? document.querySelector(href) : null;
+    });
     function onScroll(){
       const pos = window.scrollY + 100;
       let activeIdx = 0;
       targets.forEach((t, i)=>{
         if(t && t.offsetTop <= pos) activeIdx = i;
       });
-      navLinks.forEach((a,i)=> a.style.color = (i === activeIdx) ? 'var(--signal)' : '');
+      navLinks.forEach((a,i)=> {
+        if(targets[i]) a.style.color = (i === activeIdx) ? 'var(--signal)' : '';
+      });
     }
     window.addEventListener('scroll', onScroll, { passive:true });
     onScroll();
