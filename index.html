@@ -8,15 +8,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#080B18;
-    --surface:#10142A;
-    --surface-2:#141A36;
-    --line:#232A50;
-    --text:#EEF0FB;
-    --muted:#8B93C4;
-    --signal:#4FE0D8;   /* aurora cyan — detection line */
-    --regime:#C77DFF;   /* aurora violet — regime-shift marker */
-    --regime-dim: rgba(199,125,255,0.15);
+    --ink:#FAFBFE;
+    --surface:#FFFFFF;
+    --surface-2:#F3F5FA;
+    --line:#E4E8F1;
+    --text:#12151F;
+    --muted:#5C6478;
+    --signal:#0E9C94;   /* teal — detection line, AA-contrast on white */
+    --regime:#7C3AED;   /* violet — regime-shift marker */
+    --regime-dim: rgba(124,58,237,0.08);
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   html{scroll-behavior:smooth;}
@@ -40,7 +40,7 @@
   /* ---------- NAV ---------- */
   nav{
     position:sticky; top:0; z-index:50;
-    background:rgba(11,15,20,0.85);
+    background:rgba(250,251,254,0.85);
     backdrop-filter:blur(8px);
     border-bottom:1px solid var(--line);
   }
@@ -94,7 +94,7 @@
     width:7px; height:7px;
     background:var(--signal);
     border-radius:50%;
-    box-shadow:0 0 0 4px rgba(95,225,179,0.15);
+    box-shadow:0 0 0 4px rgba(14,156,148,0.15);
   }
   h1.name{
     font-family:'Fraunces', serif;
@@ -134,19 +134,19 @@
   .btn:hover{
     border-color:var(--signal);
     color:var(--signal);
-    box-shadow:0 0 0 1px rgba(79,224,216,0.15), 0 6px 18px rgba(79,224,216,0.12);
+    box-shadow:0 0 0 1px rgba(14,156,148,0.15), 0 6px 18px rgba(14,156,148,0.12);
     transform:translateY(-1px);
   }
   .btn.primary{
     background:linear-gradient(100deg, var(--signal), var(--regime) 130%);
-    color:var(--ink);
+    color:#FFFFFF;
     border-color:transparent;
     font-weight:600;
   }
   .btn.primary:hover{
     opacity:0.92;
-    color:var(--ink);
-    box-shadow:0 6px 24px rgba(199,125,255,0.25);
+    color:#FFFFFF;
+    box-shadow:0 6px 24px rgba(124,58,237,0.25);
   }
 
   /* ---------- CHART SIGNATURE ---------- */
@@ -156,6 +156,7 @@
     background:var(--surface);
     border-radius:6px;
     padding:20px 20px 14px;
+    box-shadow:0 4px 24px rgba(18,21,31,0.05);
   }
   .chart-head{
     display:flex; justify-content:space-between; align-items:baseline;
@@ -274,19 +275,30 @@
   /* ---------- PROJECT CARDS ---------- */
   .project{
     display:grid;
-    grid-template-columns:140px 1fr;
-    gap:24px;
+    grid-template-columns:44px 110px 1fr;
+    gap:20px;
     padding:26px 20px;
     margin:0 -20px;
     border-top:1px solid var(--line);
     border-radius:8px;
     transition:background .25s ease, transform .25s ease;
+    align-items:start;
   }
   .project:hover{
-    background:linear-gradient(90deg, rgba(79,224,216,0.05), rgba(199,125,255,0.05));
+    background:linear-gradient(90deg, rgba(14,156,148,0.05), rgba(124,58,237,0.05));
     transform:translateX(4px);
   }
   .project:first-of-type{ border-top:none; }
+  .p-icon{
+    width:40px; height:40px;
+    border-radius:9px;
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--signal);
+    flex-shrink:0;
+  }
+  .p-icon svg{ width:20px; height:20px; }
   .p-tag{
     font-family:'IBM Plex Mono', monospace;
     font-size:11px;
@@ -331,7 +343,7 @@
   }
   .rcard:hover{
     border-color:var(--regime);
-    box-shadow:0 8px 28px rgba(199,125,255,0.12);
+    box-shadow:0 8px 28px rgba(124,58,237,0.12);
     transform:translateY(-2px);
   }
   .rcard .p-title{ font-size:17px; margin-bottom:6px; }
@@ -385,6 +397,7 @@
 
   @media (max-width:640px){
     .project{ grid-template-columns:1fr; gap:8px; }
+    .p-icon{ margin-bottom:4px; }
     .skillgrid{ grid-template-columns:1fr; }
     header.hero{ padding:70px 0 40px; }
   }
@@ -457,6 +470,7 @@
     </div>
 
     <div class="project" data-category="client">
+      <div class="p-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v10H8l-4 4V5z"/><circle cx="9" cy="10" r="0.6" fill="currentColor" stroke="none"/><circle cx="12" cy="10" r="0.6" fill="currentColor" stroke="none"/><circle cx="15" cy="10" r="0.6" fill="currentColor" stroke="none"/></svg></div>
       <div class="p-tag">Client · AI</div>
       <div>
         <div class="p-title">AI chatbot for a D2C jewellery brand</div>
@@ -470,6 +484,7 @@
     </div>
 
     <div class="project" data-category="client">
+      <div class="p-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M20 20H4"/></svg></div>
       <div class="p-tag">Client · Data</div>
       <div>
         <div class="p-title">Power BI project-tracking dashboard</div>
@@ -482,6 +497,7 @@
     </div>
 
     <div class="project" data-category="personal">
+      <div class="p-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h2l2-6 3 12 3-15 3 12 2-6h3"/></svg></div>
       <div class="p-tag">Personal</div>
       <div>
         <div class="p-title">Voice assistant</div>
@@ -494,6 +510,7 @@
     </div>
 
     <div class="project" data-category="hackathon">
+      <div class="p-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><ellipse cx="12" cy="12" rx="9" ry="4"/><ellipse cx="12" cy="12" rx="9" ry="4" transform="rotate(60 12 12)"/></svg></div>
       <div class="p-tag">Hackathon 2026</div>
       <div>
         <div class="p-title">TerraMind++ — cross-modal satellite retrieval</div>
@@ -622,14 +639,14 @@
     const calmRect = document.createElementNS(ns,'rect');
     calmRect.setAttribute('x',0); calmRect.setAttribute('y',0);
     calmRect.setAttribute('width', shiftIndex*stepX); calmRect.setAttribute('height',H);
-    calmRect.setAttribute('fill','rgba(95,225,179,0.04)');
+    calmRect.setAttribute('fill','rgba(14,156,148,0.05)');
     svg.appendChild(calmRect);
 
     // shift zone fill
     const shiftRect = document.createElementNS(ns,'rect');
     shiftRect.setAttribute('x', shiftIndex*stepX); shiftRect.setAttribute('y',0);
     shiftRect.setAttribute('width', W - shiftIndex*stepX); shiftRect.setAttribute('height',H);
-    shiftRect.setAttribute('fill','rgba(242,166,90,0.07)');
+    shiftRect.setAttribute('fill','rgba(124,58,237,0.06)');
     svg.appendChild(shiftRect);
 
     // divider line at shift
@@ -789,10 +806,10 @@
         x: Math.random()*canvas.width,
         y: Math.random()*canvas.height,
         r: Math.random()*1.2 + 0.3,
-        baseAlpha: Math.random()*0.5 + 0.15,
+        baseAlpha: Math.random()*0.25 + 0.08,
         phase: Math.random()*Math.PI*2,
         speed: Math.random()*0.015 + 0.005,
-        hue: Math.random() > 0.5 ? '79,224,216' : '199,125,255'
+        hue: Math.random() > 0.5 ? '14,156,148' : '124,58,237'
       });
     }
 
