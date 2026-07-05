@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hanshika Awasthi — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B0F14;
+    --surface:#121820;
+    --surface-2:#161e28;
+    --line:#232d38;
+    --text:#E8EDF2;
+    --muted:#8493A3;
+    --signal:#5FE1B3;   /* detection line */
+    --regime:#F2A65A;   /* regime-shift marker */
+    --regime-dim: rgba(242,166,90,0.15);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ink);
+    color:var(--text);
+    font-family:'IBM Plex Sans', sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{ background:var(--signal); color:var(--ink); }
+
+  a{color:inherit;}
+
+  .wrap{
+    max-width:960px;
+    margin:0 auto;
+    padding:0 28px;
+  }
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(11,15,20,0.85);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  nav .wrap{
+    display:flex; justify-content:space-between; align-items:center;
+    height:64px;
+  }
+  .logo{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:14px;
+    color:var(--signal);
+    letter-spacing:0.02em;
+  }
+  .navlinks{ display:flex; gap:28px; font-size:14px; color:var(--muted); }
+  .navlinks a{ text-decoration:none; transition:color .2s; }
+  .navlinks a:hover{ color:var(--text); }
+
+  /* ---------- HERO ---------- */
+  header.hero{
+    padding:100px 0 60px;
+    border-bottom:1px solid var(--line);
+    position:relative;
+    overflow:hidden;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    color:var(--signal);
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    margin-bottom:18px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{
+    content:'';
+    width:7px; height:7px;
+    background:var(--signal);
+    border-radius:50%;
+    box-shadow:0 0 0 4px rgba(95,225,179,0.15);
+  }
+  h1.name{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(40px, 6vw, 68px);
+    line-height:1.04;
+    letter-spacing:-0.01em;
+    max-width:15ch;
+  }
+  h1.name em{
+    font-style:italic;
+    font-weight:400;
+    color:var(--muted);
+  }
+  .hero-sub{
+    margin-top:22px;
+    font-size:17px;
+    color:var(--muted);
+    max-width:52ch;
+  }
+  .hero-links{
+    margin-top:32px;
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+  }
+  .btn{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    padding:10px 18px;
+    border-radius:3px;
+    border:1px solid var(--line);
+    text-decoration:none;
+    color:var(--text);
+    transition:border-color .2s, color .2s;
+  }
+  .btn:hover{ border-color:var(--signal); color:var(--signal); }
+  .btn.primary{
+    background:var(--signal);
+    color:var(--ink);
+    border-color:var(--signal);
+    font-weight:500;
+  }
+  .btn.primary:hover{ opacity:0.88; color:var(--ink); }
+
+  /* ---------- CHART SIGNATURE ---------- */
+  .chart-panel{
+    margin-top:52px;
+    border:1px solid var(--line);
+    background:var(--surface);
+    border-radius:6px;
+    padding:20px 20px 14px;
+  }
+  .chart-head{
+    display:flex; justify-content:space-between; align-items:baseline;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    color:var(--muted);
+    margin-bottom:10px;
+  }
+  .chart-head .flag{
+    color:var(--regime);
+  }
+  svg#chart{ width:100%; height:150px; display:block; }
+  .chart-foot{
+    display:flex; justify-content:space-between;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--muted);
+    margin-top:6px;
+    border-top:1px solid var(--line);
+    padding-top:10px;
+  }
+  .chart-foot b{ color:var(--text); font-weight:500; }
+
+  /* ---------- STATS ---------- */
+  .stats-row{
+    margin-top:48px;
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+    border-radius:6px;
+    overflow:hidden;
+  }
+  .stat{
+    background:var(--surface);
+    padding:18px 16px;
+    text-align:left;
+  }
+  .stat-num{
+    display:block;
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:28px;
+    color:var(--signal);
+    line-height:1;
+  }
+  .stat-label{
+    display:block;
+    margin-top:8px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    line-height:1.4;
+  }
+
+  /* ---------- SCROLL REVEAL ---------- */
+  .reveal{
+    opacity:0;
+    transform:translateY(14px);
+    transition:opacity .6s ease, transform .6s ease;
+  }
+  .reveal.in-view{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  /* ---------- PROJECT FILTER ---------- */
+  .filter-row{
+    display:flex; gap:10px; flex-wrap:wrap;
+    margin-bottom:8px;
+  }
+  .filter-btn{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--muted);
+    background:transparent;
+    border:1px solid var(--line);
+    padding:7px 14px;
+    border-radius:20px;
+    cursor:pointer;
+    transition:all .2s ease;
+  }
+  .filter-btn:hover{ color:var(--text); border-color:var(--muted); }
+  .filter-btn.active{
+    color:var(--ink);
+    background:var(--signal);
+    border-color:var(--signal);
+  }
+  .project{ transition:opacity .3s ease, transform .3s ease, max-height .3s ease; }
+  .project.hidden{
+    display:none;
+  }
+
+  /* ---------- SECTIONS ---------- */
+  section{ padding:72px 0; border-bottom:1px solid var(--line); }
+  section:last-of-type{ border-bottom:none; }
+  .section-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--signal);
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    margin-bottom:8px;
+  }
+  h2{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(26px, 3.2vw, 34px);
+    margin-bottom:34px;
+    max-width:20ch;
+  }
+
+  /* ---------- PROJECT CARDS ---------- */
+  .project{
+    display:grid;
+    grid-template-columns:140px 1fr;
+    gap:24px;
+    padding:26px 0;
+    border-top:1px solid var(--line);
+  }
+  .project:first-of-type{ border-top:none; }
+  .p-tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    padding-top:3px;
+  }
+  .p-title{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:19px;
+    margin-bottom:8px;
+  }
+  .p-desc{ color:var(--muted); font-size:15px; max-width:60ch; }
+  .p-stack{
+    margin-top:12px;
+    display:flex; flex-wrap:wrap; gap:8px;
+  }
+  .p-stack span{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--text);
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    padding:4px 9px;
+    border-radius:3px;
+  }
+
+  /* ---------- RESEARCH ---------- */
+  .research{
+    display:grid;
+    gap:20px;
+  }
+  .rcard{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-left:2px solid var(--regime);
+    padding:20px 22px;
+    border-radius:0 4px 4px 0;
+  }
+  .rcard .p-title{ font-size:17px; margin-bottom:6px; }
+  .rcard .meta{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--regime);
+    margin-bottom:8px;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+  }
+
+  /* ---------- SKILLS ---------- */
+  .skillgrid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:28px;
+  }
+  .skillcol h3{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    margin-bottom:12px;
+  }
+  .skillcol ul{ list-style:none; }
+  .skillcol li{
+    font-size:14.5px;
+    padding:6px 0;
+    border-bottom:1px solid var(--line);
+    color:var(--text);
+  }
+  .skillcol li:last-child{ border-bottom:none; }
+
+  /* ---------- FOOTER / CONTACT ---------- */
+  footer{ padding:70px 0 50px; }
+  footer h2{ margin-bottom:16px; }
+  footer p{ color:var(--muted); max-width:48ch; margin-bottom:28px; }
+  .contact-row{
+    display:flex; gap:16px; flex-wrap:wrap;
+  }
+  .foot-meta{
+    margin-top:60px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    color:var(--muted);
+    display:flex; justify-content:space-between;
+    flex-wrap:wrap; gap:10px;
+  }
+
+  @media (max-width:640px){
+    .project{ grid-template-columns:1fr; gap:8px; }
+    .skillgrid{ grid-template-columns:1fr; }
+    header.hero{ padding:70px 0 40px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    * { animation:none !important; transition:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="logo">H.AWASTHI</div>
+    <div class="navlinks">
+      <a href="#work">Work</a>
+      <a href="#research">Research</a>
+      <a href="#skills">Skills</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Available for freelance &amp; internship work</div>
+    <h1 class="name">Hanshika Awasthi<br><em>builds systems that catch what others miss.</em></h1>
+    <p class="hero-sub">
+      Third-year B.Tech CS student working across applied AI, full-stack development, and quantitative modeling —
+      from production chatbots for e-commerce brands to regime-switching models for fraud detection research.
+    </p>
+    <div class="hero-links">
+      <a class="btn primary" href="#contact">Get in touch</a>
+      <a class="btn" href="#work">See the work</a>
+    </div>
+
+    <div class="stats-row" id="stats">
+      <div class="stat"><span class="stat-num" data-target="4">0</span><span class="stat-label">Shipped projects</span></div>
+      <div class="stat"><span class="stat-num" data-target="2">0</span><span class="stat-label">Publications</span></div>
+      <div class="stat"><span class="stat-num" data-target="31" data-suffix="%">0</span><span class="stat-label">Recall gain vs. baseline</span></div>
+      <div class="stat"><span class="stat-num" data-target="3">0</span><span class="stat-label">Year of B.Tech CS</span></div>
+    </div>
+
+    <div class="chart-panel">
+      <div class="chart-head">
+        <span>UPI_STREAM · live simulation</span>
+        <span class="flag">● regime shift detected</span>
+      </div>
+      <svg id="chart" viewBox="0 0 640 150" preserveAspectRatio="none"></svg>
+      <div class="chart-foot">
+        <span>GMM regime-switching model</span>
+        <span><b>+31%</b> recall vs. Isolation Forest baseline</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="work" class="reveal">
+  <div class="wrap">
+    <div class="section-label">Selected work</div>
+    <h2>Applied AI &amp; full-stack projects</h2>
+
+    <div class="filter-row" id="filters">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="client">Client</button>
+      <button class="filter-btn" data-filter="personal">Personal</button>
+      <button class="filter-btn" data-filter="hackathon">Hackathon</button>
+    </div>
+
+    <div class="project" data-category="client">
+      <div class="p-tag">Client · AI</div>
+      <div>
+        <div class="p-title">AI chatbot for a D2C jewellery brand</div>
+        <p class="p-desc">
+          Full-stack chatbot widget for a jewellery e-commerce client — floating chat-bubble UI, in-chat product
+          recommendation cards, rate limiting, and order-redirect integration. Deployed alongside the client's
+          Shopify storefront.
+        </p>
+        <div class="p-stack"><span>Flask</span><span>Gemini API</span><span>Shopify</span><span>JavaScript</span></div>
+      </div>
+    </div>
+
+    <div class="project" data-category="client">
+      <div class="p-tag">Client · Data</div>
+      <div>
+        <div class="p-title">Power BI project-tracking dashboard</div>
+        <p class="p-desc">
+          Custom DAX measures and gauge charts built for a business client to track project completion
+          in real time across teams.
+        </p>
+        <div class="p-stack"><span>Power BI</span><span>DAX</span></div>
+      </div>
+    </div>
+
+    <div class="project" data-category="personal">
+      <div class="p-tag">Personal</div>
+      <div>
+        <div class="p-title">Voice assistant</div>
+        <p class="p-desc">
+          Speech-to-text and text-to-speech pipeline wired into an LLM backend — built as a portfolio
+          project to explore conversational, hands-free interfaces.
+        </p>
+        <div class="p-stack"><span>Flask</span><span>Gemini API</span><span>Web Speech API</span></div>
+      </div>
+    </div>
+
+    <div class="project" data-category="hackathon">
+      <div class="p-tag">Hackathon 2026</div>
+      <div>
+        <div class="p-title">TerraMind++ — cross-modal satellite retrieval</div>
+        <p class="p-desc">
+          Cross-modal image retrieval system for satellite imagery, built for ISRO's Bharatiya Antariksh
+          Hackathon 2026 as part of Team Astra4 / AstraCore.
+        </p>
+        <div class="p-stack"><span>Python</span><span>Deep Learning</span><span>Remote Sensing</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="research" class="reveal">
+  <div class="wrap">
+    <div class="section-label">Research</div>
+    <h2>Quantitative modeling &amp; publications</h2>
+
+    <div class="research">
+      <div class="rcard">
+        <div class="meta">In progress</div>
+        <div class="p-title">GMM-based regime-switching fraud detection for UPI payment streams</div>
+        <p class="p-desc">
+          A regime-switching framework using Gaussian Mixture Models to flag anomalous transaction behavior
+          in real time. Outperforms ADWIN and Isolation Forest baselines in simulation; next step is
+          validation on the PaySim dataset.
+        </p>
+      </div>
+
+      <div class="rcard">
+        <div class="meta">Under review</div>
+        <div class="p-title">Gold &amp; silver price forecasting via regime-switching models</div>
+        <p class="p-desc">
+          Completed during a research internship at IISc Bengaluru under Prof. Ratikanta Behera. Combines
+          GMM, Monte Carlo simulation, and Extreme Value Theory for commodity price forecasting.
+          Submitted for publication (Resources Policy-tier target).
+        </p>
+      </div>
+
+      <div class="rcard">
+        <div class="meta">Published · ICMLCS 2025</div>
+        <div class="p-title">Hybrid recommendation systems</div>
+        <p class="p-desc">
+          Accepted paper on hybrid recommendation approaches presented at ICMLCS 2025.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="skills" class="reveal">
+  <div class="wrap">
+    <div class="section-label">Toolkit</div>
+    <h2>What I work with</h2>
+
+    <div class="skillgrid">
+      <div class="skillcol">
+        <h3>AI &amp; Full-stack</h3>
+        <ul>
+          <li>Python (Flask)</li>
+          <li>React &amp; JavaScript</li>
+          <li>Gemini / LLM API integration</li>
+          <li>Power BI &amp; DAX</li>
+        </ul>
+      </div>
+      <div class="skillcol">
+        <h3>Quantitative modeling</h3>
+        <ul>
+          <li>Gaussian Mixture Models</li>
+          <li>Monte Carlo simulation</li>
+          <li>Extreme Value Theory</li>
+          <li>Regime-switching models</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer id="contact" class="reveal">
+  <div class="wrap">
+    <div class="section-label">Get in touch</div>
+    <h2>Open to freelance work &amp; internships.</h2>
+    <p>
+      Currently taking on full-stack, applied AI, and data-analytics projects — from chatbot builds
+      to dashboards to research-driven modeling work.
+    </p>
+    <div class="contact-row">
+      <a class="btn primary" href="mailto:your-email@example.com">Email me</a>
+      <a class="btn" href="#">LinkedIn</a>
+      <a class="btn" href="#">GitHub</a>
+    </div>
+
+    <div class="foot-meta">
+      <span>Hanshika Awasthi — B.Tech CS, Allenhouse Institute of Technology, Kanpur (2024–2028)</span>
+      <span>Based in Kanpur, India</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Draw a regime-switching time series with a detected shift point
+  (function(){
+    const svg = document.getElementById('chart');
+    const W = 640, H = 150;
+    const n = 80;
+    const shiftIndex = 54;
+
+    // generate synthetic series: calm regime, then volatile regime after shift
+    let points = [];
+    let y = 75;
+    for(let i=0;i<n;i++){
+      const inShift = i >= shiftIndex;
+      const vol = inShift ? 14 : 4;
+      const drift = inShift ? (Math.sin(i*0.4)*6) : 0;
+      y += (Math.random()-0.5)*vol + (inShift ? drift*0.15 : 0);
+      y = Math.max(20, Math.min(130, y));
+      points.push(y);
+    }
+
+    const stepX = W/(n-1);
+    const toPath = (pts) => pts.map((p,i)=> `${i===0?'M':'L'} ${i*stepX} ${p}`).join(' ');
+
+    const ns = 'http://www.w3.org/2000/svg';
+
+    // baseline zone (calm regime) subtle fill
+    const calmRect = document.createElementNS(ns,'rect');
+    calmRect.setAttribute('x',0); calmRect.setAttribute('y',0);
+    calmRect.setAttribute('width', shiftIndex*stepX); calmRect.setAttribute('height',H);
+    calmRect.setAttribute('fill','rgba(95,225,179,0.04)');
+    svg.appendChild(calmRect);
+
+    // shift zone fill
+    const shiftRect = document.createElementNS(ns,'rect');
+    shiftRect.setAttribute('x', shiftIndex*stepX); shiftRect.setAttribute('y',0);
+    shiftRect.setAttribute('width', W - shiftIndex*stepX); shiftRect.setAttribute('height',H);
+    shiftRect.setAttribute('fill','rgba(242,166,90,0.07)');
+    svg.appendChild(shiftRect);
+
+    // divider line at shift
+    const divider = document.createElementNS(ns,'line');
+    divider.setAttribute('x1', shiftIndex*stepX); divider.setAttribute('x2', shiftIndex*stepX);
+    divider.setAttribute('y1',0); divider.setAttribute('y2',H);
+    divider.setAttribute('stroke','var(--regime)');
+    divider.setAttribute('stroke-dasharray','3 4');
+    divider.setAttribute('stroke-width','1');
+    divider.setAttribute('opacity','0.6');
+    svg.appendChild(divider);
+
+    // main path
+    const path = document.createElementNS(ns,'path');
+    path.setAttribute('d', toPath(points));
+    path.setAttribute('fill','none');
+    path.setAttribute('stroke','var(--signal)');
+    path.setAttribute('stroke-width','1.75');
+    path.setAttribute('stroke-linecap','round');
+    path.setAttribute('stroke-linejoin','round');
+    svg.appendChild(path);
+
+    // recolor the post-shift segment in the flag color
+    const path2 = document.createElementNS(ns,'path');
+    path2.setAttribute('d', toPath(points.slice(shiftIndex)).replace(/M/, `M `).split(' ').map((tok,idx)=>tok).join(' '));
+    // simpler: build second path directly with offset
+    let d2 = '';
+    for(let i=shiftIndex;i<n;i++){
+      d2 += (i===shiftIndex? 'M':'L') + ' ' + (i*stepX) + ' ' + points[i] + ' ';
+    }
+    path2.setAttribute('d', d2);
+    path2.setAttribute('fill','none');
+    path2.setAttribute('stroke','var(--regime)');
+    path2.setAttribute('stroke-width','1.75');
+    path2.setAttribute('stroke-linecap','round');
+    path2.setAttribute('stroke-linejoin','round');
+    svg.appendChild(path2);
+
+    // marker dot at shift point
+    const dot = document.createElementNS(ns,'circle');
+    dot.setAttribute('cx', shiftIndex*stepX);
+    dot.setAttribute('cy', points[shiftIndex]);
+    dot.setAttribute('r', 4);
+    dot.setAttribute('fill','var(--regime)');
+    svg.appendChild(dot);
+
+    const pulse = document.createElementNS(ns,'circle');
+    pulse.setAttribute('cx', shiftIndex*stepX);
+    pulse.setAttribute('cy', points[shiftIndex]);
+    pulse.setAttribute('r', 4);
+    pulse.setAttribute('fill','none');
+    pulse.setAttribute('stroke','var(--regime)');
+    pulse.setAttribute('stroke-width','1.5');
+    const anim = document.createElementNS(ns,'animate');
+    anim.setAttribute('attributeName','r');
+    anim.setAttribute('values','4;14;4');
+    anim.setAttribute('dur','2.4s');
+    anim.setAttribute('repeatCount','indefinite');
+    const animOp = document.createElementNS(ns,'animate');
+    animOp.setAttribute('attributeName','opacity');
+    animOp.setAttribute('values','0.8;0;0.8');
+    animOp.setAttribute('dur','2.4s');
+    animOp.setAttribute('repeatCount','indefinite');
+    pulse.appendChild(anim);
+    pulse.appendChild(animOp);
+    svg.appendChild(pulse);
+  })();
+
+  // Animated stat counters — trigger once when stats row enters view
+  (function(){
+    const statsRow = document.getElementById('stats');
+    if(!statsRow) return;
+    let done = false;
+
+    function animateCount(el){
+      const target = parseFloat(el.dataset.target);
+      const suffix = el.dataset.suffix || '';
+      const duration = 900;
+      const start = performance.now();
+      function tick(now){
+        const progress = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = Math.round(target * eased);
+        el.textContent = current + suffix;
+        if(progress < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+
+    const statsObserver = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting && !done){
+          done = true;
+          document.querySelectorAll('.stat-num').forEach(animateCount);
+          statsObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.4 });
+    statsObserver.observe(statsRow);
+  })();
+
+  // Scroll-reveal for sections
+  (function(){
+    const revealEls = document.querySelectorAll('.reveal');
+    if(!revealEls.length) return;
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          entry.target.classList.add('in-view');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach(el => io.observe(el));
+  })();
+
+  // Project category filtering
+  (function(){
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const projects = document.querySelectorAll('#work .project');
+    if(!filterBtns.length) return;
+
+    filterBtns.forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        filterBtns.forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.dataset.filter;
+
+        projects.forEach(p=>{
+          const cat = p.dataset.category;
+          const show = (filter === 'all' || cat === filter);
+          p.classList.toggle('hidden', !show);
+        });
+      });
+    });
+  })();
+
+  // Active nav link highlight on scroll
+  (function(){
+    const navLinks = document.querySelectorAll('.navlinks a');
+    const targets = Array.from(navLinks).map(a => document.querySelector(a.getAttribute('href')));
+    function onScroll(){
+      const pos = window.scrollY + 100;
+      let activeIdx = 0;
+      targets.forEach((t, i)=>{
+        if(t && t.offsetTop <= pos) activeIdx = i;
+      });
+      navLinks.forEach((a,i)=> a.style.color = (i === activeIdx) ? 'var(--signal)' : '');
+    }
+    window.addEventListener('scroll', onScroll, { passive:true });
+    onScroll();
+  })();
+</script>
+
+</body>
+</html>
