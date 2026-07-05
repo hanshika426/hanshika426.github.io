@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo — Browser Voice Assistant | Hanshika Awasthi</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#FAFBFE; --surface:#FFFFFF; --surface-2:#F3F5FA; --line:#E4E8F1;
+    --text:#12151F; --muted:#5C6478; --signal:#0E9C94; --regime:#7C3AED;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{ background:var(--ink); color:var(--text); font-family:'IBM Plex Sans',sans-serif; }
+  a{ color:var(--signal); text-decoration:none; }
+  .topbar{
+    background:var(--surface); border-bottom:1px solid var(--line); padding:16px 24px;
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;
+  }
+  .topbar .back{ font-family:'IBM Plex Mono',monospace; font-size:13px; }
+  .badge{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--signal);
+    background:rgba(14,156,148,0.08); border:1px solid var(--signal); padding:4px 10px; border-radius:20px;
+  }
+  .wrap{ max-width:720px; margin:0 auto; padding:60px 24px 90px; text-align:center; }
+  h1{ font-family:'Fraunces',serif; font-weight:600; font-size:32px; margin-bottom:10px; }
+  p.sub{ color:var(--muted); max-width:56ch; margin:0 auto 40px; font-size:15px; }
+
+  .mic-wrap{ display:flex; justify-content:center; margin-bottom:26px; }
+  #micBtn{
+    width:120px; height:120px; border-radius:50%; border:none; cursor:pointer;
+    background:linear-gradient(135deg, var(--signal), var(--regime));
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 10px 32px rgba(18,21,31,0.15); transition:transform .2s;
+  }
+  #micBtn.listening{ animation:pulse 1.2s infinite; }
+  #micBtn svg{ width:44px; height:44px; color:#fff; }
+  @keyframes pulse{
+    0%{ box-shadow:0 0 0 0 rgba(124,58,237,0.4); }
+    70%{ box-shadow:0 0 0 22px rgba(124,58,237,0); }
+    100%{ box-shadow:0 0 0 0 rgba(124,58,237,0); }
+  }
+  .status{ font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--muted); margin-bottom:30px; }
+
+  .transcript-box{
+    background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:22px 24px;
+    text-align:left; min-height:80px;
+  }
+  .transcript-box .you{ font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--muted); margin-bottom:6px; }
+  .transcript-box .you-text{ font-size:15px; margin-bottom:16px; min-height:20px; }
+  .transcript-box .bot{ font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--regime); margin-bottom:6px; }
+  .transcript-box .bot-text{ font-size:16px; font-family:'Fraunces',serif; font-weight:500; }
+
+  .fallback{ margin-top:24px; display:flex; gap:8px; }
+  .fallback input{
+    flex:1; padding:12px 14px; border-radius:8px; border:1px solid var(--line); font-size:14px; outline:none;
+  }
+  .fallback button{
+    background:var(--signal); color:#fff; border:none; padding:0 18px; border-radius:8px; cursor:pointer; font-weight:600;
+  }
+  .footnote{ margin-top:36px; font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--muted); line-height:1.6; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="back" href="index.html">← Back to portfolio</a>
+  <span class="badge">Live demo · Web Speech API</span>
+</div>
+
+<div class="wrap">
+  <h1>Browser voice assistant</h1>
+  <p class="sub">
+    Tap the mic and speak, or type below if your browser/mic isn't available. Try: "what time is it",
+    "tell me a joke", "what can you do", or "who are you".
+  </p>
+
+  <div class="mic-wrap">
+    <button id="micBtn" aria-label="Start listening">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 15a3.5 3.5 0 0 0 3.5-3.5V6a3.5 3.5 0 0 0-7 0v5.5A3.5 3.5 0 0 0 12 15z"/>
+        <path d="M6 11.5a6 6 0 0 0 12 0M12 18v3"/>
+      </svg>
+    </button>
+  </div>
+  <div class="status" id="status">Tap the mic to speak</div>
+
+  <div class="transcript-box">
+    <div class="you">YOU SAID</div>
+    <div class="you-text" id="youText">—</div>
+    <div class="bot">ASSISTANT</div>
+    <div class="bot-text" id="botText">Ready when you are.</div>
+  </div>
+
+  <div class="fallback">
+    <input id="fallbackInput" type="text" placeholder="Or type your question here...">
+    <button id="fallbackSend">Ask</button>
+  </div>
+
+  <div class="footnote">
+    Speech recognition works best in Chrome/Edge desktop over HTTPS, with mic permission granted. If unsupported,
+    use the text field above — the response logic is the same either way. The production version routes recognized
+    text to a Flask + Gemini backend for open-ended natural-language understanding; this demo uses a compact
+    rule-based intent matcher so it can run fully in the browser.
+  </div>
+</div>
+
+<script>
+  const micBtn = document.getElementById('micBtn');
+  const statusEl = document.getElementById('status');
+  const youText = document.getElementById('youText');
+  const botText = document.getElementById('botText');
+
+  function respond(text){
+    const t = text.toLowerCase();
+    if(/time/.test(t)) return "It's " + new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) + " right now.";
+    if(/date|today/.test(t)) return "Today is " + new Date().toLocaleDateString([], {weekday:'long', month:'long', day:'numeric'}) + ".";
+    if(/joke/.test(t)) return "Why did the model overfit? It memorized the punchline instead of learning to be funny.";
+    if(/who are you|your name/.test(t)) return "I'm a browser-based voice assistant demo, built with the Web Speech API and a Flask + Gemini backend in production.";
+    if(/what can you do|help/.test(t)) return "I can tell the time, the date, crack a joke, or just chat — try asking me something.";
+    if(/hi|hello|hey/.test(t)) return "Hey! Good to hear from you.";
+    if(/thank/.test(t)) return "Anytime!";
+    return "I heard: \"" + text + "\" — in the full version that goes to Gemini for a proper answer. This demo only knows a few tricks.";
+  }
+
+  function speak(text){
+    if(!('speechSynthesis' in window)) return;
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.rate = 1.0;
+    window.speechSynthesis.speak(utter);
+  }
+
+  function handleUtterance(text){
+    youText.textContent = text;
+    const reply = respond(text);
+    botText.textContent = reply;
+    speak(reply);
+  }
+
+  document.getElementById('fallbackSend').addEventListener('click', () => {
+    const val = document.getElementById('fallbackInput').value.trim();
+    if(val){ handleUtterance(val); document.getElementById('fallbackInput').value=''; }
+  });
+  document.getElementById('fallbackInput').addEventListener('keydown', e => {
+    if(e.key === 'Enter') document.getElementById('fallbackSend').click();
+  });
+
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(SR){
+    const recognition = new SR();
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+    let listening = false;
+
+    micBtn.addEventListener('click', () => {
+      if(listening) return;
+      listening = true;
+      micBtn.classList.add('listening');
+      statusEl.textContent = 'Listening...';
+      recognition.start();
+    });
+    recognition.onresult = (e) => {
+      const text = e.results[0][0].transcript;
+      handleUtterance(text);
+    };
+    recognition.onend = () => {
+      listening = false;
+      micBtn.classList.remove('listening');
+      statusEl.textContent = 'Tap the mic to speak';
+    };
+    recognition.onerror = () => {
+      listening = false;
+      micBtn.classList.remove('listening');
+      statusEl.textContent = 'Mic error — try the text field below instead';
+    };
+  } else {
+    statusEl.textContent = 'Speech recognition not supported in this browser — use the text field below';
+    micBtn.style.opacity = '0.4';
+    micBtn.style.cursor = 'not-allowed';
+  }
+</script>
+
+</body>
+</html>
